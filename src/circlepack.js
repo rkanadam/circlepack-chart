@@ -187,11 +187,11 @@ export default Kapsule({
       .attr('r', 0)
       .style('stroke-width', 1)
       .on('click', d => {
-        d3Event.stopPropagation();
+        // d3Event.stopPropagation();
         (state.onClick || this.zoomToNode)(d.data);
       })
       .on('mouseover', d => {
-        d3Event.stopPropagation();
+        // d3Event.stopPropagation();
         state.onHover && state.onHover(d.data);
 
         state.tooltip.style('display', state.showTooltip(d.data, d) ? 'inline' : 'none');
