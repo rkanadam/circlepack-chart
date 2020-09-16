@@ -33,7 +33,8 @@ export default Kapsule({
     tooltipTitle: { default: null, triggerUpdate: false },
     tooltipContent: { default: d => '', triggerUpdate: false },
     onClick: { triggerUpdate: false },
-    onHover: { triggerUpdate: false }
+    onMouseOver: { triggerUpdate: false },
+    onMouseOut: { triggerUpdate: false }
   },
   methods: {
     zoomBy: function(state, k) {
@@ -135,8 +136,7 @@ export default Kapsule({
       });
 
     state.svg
-      .on('click', () => (state.onClick || this.zoomReset)(null)) // By default reset zoom when clicking on canvas
-      .on('mouseover', () => state.onHover && state.onHover(null));
+      .on('click', () => (state.onClick || this.zoomReset)(null)); // By default reset zoom when clicking on canvas
   },
   update: function(state) {
     if (state.needsReparse) {
@@ -192,7 +192,7 @@ export default Kapsule({
       })
       .on('mouseover', d => {
         // d3Event.stopPropagation();
-        state.onHover && state.onHover(d.data);
+        state.onMouseOver && state.onMouseOver(d.data, state);
 
         state.tooltip.style('display', state.showTooltip(d.data, d) ? 'inline' : 'none');
         state.tooltip.html(`
@@ -208,7 +208,10 @@ export default Kapsule({
           ${state.tooltipContent(d.data, d)}
         `);
       })
-      .on('mouseout', () => { state.tooltip.style('display', 'none'); });
+      .on('mouseout', (d) => {
+        state.onMouseOut && state.onMouseOut(d.data, state);
+        state.tooltip.style('display', 'none');
+      });
 
     newCell.append('clipPath')
       .attr('id', d => `clip-${d.id}`)
